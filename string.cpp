@@ -55,15 +55,15 @@ namespace surya
 		return ptr[i];
 	}
 
-	/*bool STRING::operator > (STRING &t) const
+	bool STRING::operator > (STRING &t) const  // ok
 	  {
-	  return strcmp(*this , t);
+	  return strcmp(*this , t) > 0 ? true : false;
 	  }
 
-	  bool STRING::operator < (STRING &t) const
+	  bool STRING::operator < (STRING &t) const  // ok
 	  {
-	  return strcmp(t , *this);
-	  }*/
+	  return strcmp(t , *this) > 0 ? true : false;
+	  }
 
 	bool STRING::operator >= (STRING &t) const // ok
 	{
@@ -205,8 +205,76 @@ namespace surya
 			STRING::~STRING();  // explicitly calling destructor
 	}
 
-	void strcpy(STRING &s1 ,const STRING &s2)
+	bool STRING::compare(const STRING &s) const  // ok
 	{
+		if(!ptr || !s.ptr) return false;
+
+		int i;
+
+		for(i = 0 ; ptr[i] && s.ptr[i] ; i++)
+			if(ptr[i] != s.ptr[i]) return false;
+
+		if(s.ptr[i] == ptr[i]) return true;
+
+		return false;
+	}
+
+	void STRING::push_back(const char ch)
+	{
+		if(!ptr) {
+			ptr = new char[2];
+			ptr[0] = ch;
+			return;
+		}
+
+		int len = 0;
+
+		while(ptr[len]) len++;
+
+		char *p = new char[len+2];
+
+		strcpy(p , ptr);
+
+		p[len] = ch;
+		p[len + 1] = '\0';
+
+		delete [] ptr;
+
+		ptr = new char[len+2];
+
+		strcpy(ptr , p);
+
+		delete [] p;
+	}
+
+	void STRING::pop_back() // ok
+	{
+		if(!ptr) return;
+
+		int len = 0;
+
+		while(ptr[len]) len++;
+
+		char *p = new char[len];
+
+		strncpy(p , ptr , len - 1);
+
+		p[len] = '\0';
+
+		delete [] ptr;
+
+		ptr = new char[len];
+
+		strcpy(ptr , p);
+
+		delete [] p;
+
+	}
+
+	char * strcpy(STRING &s1 ,const STRING &s2)  //ok
+	{
+		if(!s2.ptr) return s1.ptr;
+
 		if(s1.ptr != nullptr)
 			delete [] s1.ptr;
 
@@ -219,10 +287,15 @@ namespace surya
 			i++;
 		}
 		s1.ptr[i] = s2.ptr[i];
+
+		return s1.ptr;
 	}
 
-	void strncpy(STRING& s1 , const STRING & s2, const int n)
+	char * strncpy(STRING& s1 , const STRING & s2, const int n)  // ok
 	{
+
+		if(!s2.ptr || !n) return s1.ptr;
+
 		if(s1.ptr != nullptr)
 			delete [] s1.ptr;
 
@@ -236,9 +309,11 @@ namespace surya
 		}
 
 		s1.ptr[i] = '\0';
+
+		return s1.ptr;
 	}
 
-	int strcmp(const STRING& s1 , const STRING& s2)
+	int strcmp(const STRING& s1 , const STRING& s2) // ok
 	{
 		if(s1.ptr == nullptr)
 			if(s2.ptr != nullptr) return s2.ptr[0];
@@ -259,7 +334,7 @@ namespace surya
 		return (int)(s1.ptr[i] - s2.ptr[i]);
 	}
 
-	int strncmp(const STRING& s1 ,const STRING& s2 , const int n)
+	int strncmp(const STRING& s1 ,const STRING& s2 , const int n)  // ok
 	{
 		if(s1.ptr == nullptr)
 			if(s2.ptr != nullptr) return s2.ptr[0];
@@ -284,9 +359,9 @@ namespace surya
 		return 0;
 	}
 
-	void strcat(STRING &s1 , const STRING &s2)
+	char * strcat(STRING &s1 , const STRING &s2)  // ok
 	{
-		if(s2.ptr == nullptr) return;
+		if(s2.ptr == nullptr) return 0;
 
 		int len1 = 0;
 
@@ -330,17 +405,18 @@ namespace surya
 		s1.ptr[i] = s[i];
 
 		delete [] s;
+		return s1.ptr;
 	}
 
-	void strncat(STRING &s1 , const STRING & s2,const int n)
+	char * strncat(STRING &s1 , const STRING & s2,const int n)  // ok
 	{
-		if(s2.ptr == nullptr) return;
+		if(s2.ptr == nullptr || !n) return s1.ptr;
 
 		int len1 = 0;
-		while(s1.ptr[len1++]);
+		while(s1.ptr[len1]) len1++;
 
 		int len2 = 0;
-		while(s2.ptr[len2++]);
+		while(s2.ptr[len2]) len2++;
 
 		char s[len1+len2+1];
 
@@ -371,43 +447,48 @@ namespace surya
 			i++;
 		}
 		s1.ptr[i] = s[i];
+
+		return s1.ptr;
 	}
 
-	void strrev(STRING &s)
+	char * strrev(STRING &s)  // ok
 	{
-		if(!s.ptr) return;
+		if(!s.ptr) return 0;
 
 		int len = 0;
 
-		while(s.ptr[len++]);
+		while(s.ptr[len])
+			len++;
 
 		for(int i = 0, j = len - 1 ; i < j ; i++, j--) {
 			int t = s.ptr[i];
 			s.ptr[i] = s.ptr[j];
 			s.ptr[j] = t;
 		}
+		return s.ptr;
 	}
 
-	void strupper(STRING &s)
+	char * strupper(STRING &s)  // ok
 	{
-		if(!s.ptr) return;
+		if(!s.ptr) return 0;
 
 		for(int i = 0 ; s.ptr[i] ; i++)
 			if(s.ptr[i] >= 'a' && s.ptr[i] <= 'z') s.ptr[i] -= 32;
-
+		return s.ptr;
 	}
 
 
-	void strlower(STRING &s)
+	char * strlower(STRING &s)  // ok
 	{
-		if(!s.ptr) return;
+		if(!s.ptr) return 0;
 
 		for(int i = 0 ; s.ptr[i] ; i++)
 			if(s.ptr[i] >= 'A' && s.ptr[i] <= 'Z') s.ptr[i] += 32;
 
+		return s.ptr;
 	}
 
-	char * strchr(const STRING& s, const char ch)
+	char * strchr(const STRING& s, const char ch)  // ok
 	{
 		if(!s.ptr) return 0;
 
@@ -417,13 +498,13 @@ namespace surya
 		return 0;
 	}
 
-	char * strrchr(const STRING& s, const char ch)
+	char * strrchr(const STRING& s, const char ch)  // ok
 	{
 		if(!s.ptr) return 0;
 
 		int len = 0;
 
-		while(s.ptr[len++]);
+		while(s.ptr[len]) len++;
 
 		for(int i = len - 1 ; i >= 0 ; i--)
 			if(s.ptr[i] == ch) return s.ptr + i;
@@ -431,7 +512,7 @@ namespace surya
 		return 0;
 	}
 
-	char * strstr(const STRING& s, const char *p)
+	char * strstr(const STRING& s, const char *p) // ok
 	{
 		if(!s.ptr) return 0;
 
@@ -446,7 +527,7 @@ namespace surya
 		return 0;
 	}
 
-	unsigned int strlen(const STRING& s)
+	unsigned int strlen(const STRING& s)  // ok
 	{
 		if(!s.ptr) return 0;
 
@@ -454,8 +535,23 @@ namespace surya
 
 		while(s.ptr[len++]);
 
-		return len;
+		return len - 1;
 
+	}
+	char * strstr(const STRING& s1 , const STRING & s2)  // ok 
+	{
+		if(!s1.ptr || !s2.ptr) return 0;
+
+		for(int i = 0 ; s1.ptr[i] ; i++) {
+			int j = 0;
+
+			for(int k = i ; s1.ptr[k] && s2.ptr[j] ; j++,k++)
+				if(s1.ptr[k] != s2.ptr[j]) break;
+
+			if(s2.ptr[j] == 0) return s1.ptr + i;
+		}
+
+		return 0;
 	}
 
 }

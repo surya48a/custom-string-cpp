@@ -23,8 +23,8 @@ namespace surya
 			// Relational and logical operator overloading declarations
 			STRING& operator +(STRING &);
 			char& operator [](const int) const;
-			//bool operator > (STRING &) const;
-			//bool operator < (STRING &) const;
+			bool operator > (STRING &) const;
+			bool operator < (STRING &) const;
 			bool operator >= (STRING &) const;
 			bool operator <= (STRING &) const;
 			bool operator != (STRING &) const;
@@ -43,22 +43,26 @@ namespace surya
 			bool empty() const;
 			const char * c_str() const;
 			void clear();
+bool compare(const STRING &) const;
+void push_back(const char);
+void pop_back();
 
-// friend functions
-friend void strcpy(STRING & , const STRING &);
-friend void strncpy(STRING& , const STRING &, const int);
-friend int strcmp(const STRING& , const STRING&);
-friend int strncmp(const STRING& ,const STRING& , const int);
-friend void strcat(STRING & , const STRING &);
-friend void strncat(STRING & , const STRING & ,const int);
-friend void strrev(STRING &);
-friend void strupper(STRING &);
-friend void strlower(STRING &);
-friend char * strchr(const STRING& , const char);
-friend char * strrchr(const STRING& , const char);
-friend char * strstr(const STRING& , const char *);
-friend unsigned int strlen(const STRING&);
 
+			// friend functions
+			friend char * strcpy(STRING & , const STRING &);
+			friend char * strncpy(STRING& , const STRING &, const int);
+			friend int strcmp(const STRING& , const STRING&);
+			friend int strncmp(const STRING& ,const STRING& , const int);
+			friend char *strcat(STRING & , const STRING &);
+			friend char * strncat(STRING & , const STRING & ,const int);
+			friend char * strrev(STRING &);
+			friend char * strupper(STRING &);
+			friend char * strlower(STRING &);
+			friend char * strchr(const STRING& , const char);
+			friend char * strrchr(const STRING& , const char);
+			friend char * strstr(const STRING& , const char *);
+			friend unsigned int strlen(const STRING&);
+                        friend char * strstr(const STRING& , const STRING &);
 
 	};
 }
