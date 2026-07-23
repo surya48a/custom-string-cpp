@@ -3,7 +3,6 @@
 
 #include<iostream>
 #include<cstring>
-using namespace std;
 
 namespace surya
 {
@@ -17,24 +16,28 @@ namespace surya
 			STRING();
 			STRING(const char*);
 			STRING(STRING &);
-			STRING operator = (STRING &);
+			STRING operator = (const STRING &);
 			~STRING();
 
 			// Relational and logical operator overloading declarations
-			STRING& operator +(STRING &);
+			STRING& operator +=(const STRING &);
+			STRING operator +(const STRING&) const;
+			STRING operator +(const char *) const;
+			friend STRING operator +(const char *s , const STRING& t);
+
 			char& operator [](const int) const;
-			bool operator > (STRING &) const;
-			bool operator < (STRING &) const;
-			bool operator >= (STRING &) const;
-			bool operator <= (STRING &) const;
-			bool operator != (STRING &) const;
-			bool operator == (STRING &) const;
+			bool operator > (const STRING &) const;
+			bool operator < (const STRING &) const;
+			bool operator >= (const STRING &) const;
+			bool operator <= (const STRING &) const;
+			bool operator != (const STRING &) const;
+			bool operator == (const STRING &) const;
 
 			// insertion and extraction operator overloading declarations
-			friend istream& operator >> (istream& , STRING &);
-			friend ostream& operator << (ostream& , STRING &);
+			friend std::istream& operator >> (std::istream& , STRING &);
+			friend std::ostream& operator << (std::ostream& , STRING &);
 
-			// Extra features
+			// Basic functions in c++ string class
 			char& at(const int) const;
 			char& front() const;
 			char& back() const;
@@ -43,17 +46,21 @@ namespace surya
 			bool empty() const;
 			const char * c_str() const;
 			void clear();
-bool compare(const STRING &) const;
-void push_back(const char);
-void pop_back();
+			void push_back(const char);
+			void pop_back();
+			int find(const char *) const;
+			void swap(STRING &);
+			int compare(const STRING &) const;
+			void append(const STRING &);
 
 
-			// friend functions
+
+			// friend functions declarations
 			friend char * strcpy(STRING & , const STRING &);
 			friend char * strncpy(STRING& , const STRING &, const int);
 			friend int strcmp(const STRING& , const STRING&);
 			friend int strncmp(const STRING& ,const STRING& , const int);
-			friend char *strcat(STRING & , const STRING &);
+			friend char * strcat(STRING & , const STRING &);
 			friend char * strncat(STRING & , const STRING & ,const int);
 			friend char * strrev(STRING &);
 			friend char * strupper(STRING &);
@@ -62,7 +69,7 @@ void pop_back();
 			friend char * strrchr(const STRING& , const char);
 			friend char * strstr(const STRING& , const char *);
 			friend unsigned int strlen(const STRING&);
-                        friend char * strstr(const STRING& , const STRING &);
+			friend char * strstr(const STRING& , const STRING &);
 
 	};
 }

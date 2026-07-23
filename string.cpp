@@ -1,44 +1,46 @@
 #include "String.h"
-//#include<cstring>
-//#include<iostream>
-//using namespace std;
 
 
 namespace surya
 {
 	// constructors and destructors 
-	STRING::STRING()  // ok 
+	STRING::STRING()   
 	{
 		ptr = nullptr;
 	}
 
-	STRING::STRING(const char* s) // ok
+	STRING::STRING(const char* s)
 	{
 		ptr = new char[strlen(s) + 1];
 		strcpy(ptr , s);
 	}
 
-	STRING::STRING(STRING &t) // ok
+	STRING::STRING(STRING &t) 
 	{
 		ptr = new char[strlen(t.ptr) + 1];
 		strcpy(ptr , t.ptr);
 	}
 
-	STRING STRING::operator = (STRING &t) // ok
+	STRING STRING::operator = (const STRING &t)
 	{
+		if(ptr != nullptr) {
+			delete [] ptr;
+			ptr = nullptr;
+		}
+
 		ptr = new char[strlen(t.ptr) + 1];
 		strcpy(ptr , t.ptr);
 		return *this;
 	}
 
-	STRING::~STRING()  // ok
+	STRING::~STRING()  
 	{
 		delete [] ptr;
 		ptr = nullptr;
 	}
 
 	// Relational and logical operator overloading 
-	STRING& STRING::operator +(STRING &t) // ok  still object + object ok    --  object + "hello" need to do it
+	STRING& STRING::operator +=(const STRING &t)  
 	{
 		STRING s;
 		s.ptr = new char[strlen(ptr) + strlen(t.ptr) + 1];
@@ -50,27 +52,60 @@ namespace surya
 		return *this;
 	}
 
-	char& STRING::operator [](const int i) const  // ok
+	STRING STRING::operator +(const STRING& t) const  
+	{
+		STRING s;
+
+		s.ptr = new char[strlen(t.ptr) + strlen(ptr) + 1];
+
+		strcpy(s.ptr , ptr);
+		strcat(s.ptr , t.ptr);
+
+		return s;
+	}
+
+	STRING STRING::operator +(const char *s) const  
+	{
+		STRING t;
+
+		t.ptr = new char[strlen(s) + strlen(ptr) + 1];
+		strcpy(t.ptr , ptr);
+		strcat(t.ptr , s);
+
+		return t;
+	}
+
+	STRING operator +(const char *s , const STRING& t)  
+	{
+		STRING s1;
+
+		s1.ptr = new char[strlen(t.ptr) + strlen(s) + 1];
+		strcpy(s1.ptr , s);
+		strcat(s1.ptr , t.ptr);
+
+		return s1;
+	}
+
+	char& STRING::operator [](const int i) const  
 	{
 		return ptr[i];
 	}
 
-	bool STRING::operator > (STRING &t) const  // ok
-	  {
-	  return strcmp(*this , t) > 0 ? true : false;
-	  }
+	bool STRING::operator > (const STRING &t) const  
+	{
+		return strcmp(*this , t) > 0 ? true : false;
+	}
 
-	  bool STRING::operator < (STRING &t) const  // ok
-	  {
-	  return strcmp(t , *this) > 0 ? true : false;
-	  }
+	bool STRING::operator < (const STRING &t) const  
+	{
+		return strcmp(t , *this) > 0 ? true : false;
+	}
 
-	bool STRING::operator >= (STRING &t) const // ok
+	bool STRING::operator >= (const STRING &t) const 
 	{
 		int i;
 
 		for(i = 0 ; ptr[i] && t.ptr[i] ; i++) {
-			//cout << (int)ptr[i] << " " << (int)t.ptr[i] << endl;
 			if(ptr[i] == t.ptr[i]) continue;
 			else if(ptr[i] > t.ptr[i]) return true;
 			else if(ptr[i] < t.ptr[i]) return false;
@@ -81,7 +116,7 @@ namespace surya
 		return true;
 	}
 
-	bool STRING::operator <= (STRING &t) const  // ok
+	bool STRING::operator <= (const STRING &t) const  
 	{
 		int i;
 		for(i = 0 ; ptr[i] && t.ptr[i] ; i++)
@@ -95,7 +130,7 @@ namespace surya
 		return true;
 	}
 
-	bool STRING::operator != (STRING &t) const // ok
+	bool STRING::operator != (const STRING &t) const 
 	{
 		int i;
 
@@ -107,7 +142,7 @@ namespace surya
 		return false;
 	}
 
-	bool STRING::operator == (STRING &t) const // ok
+	bool STRING::operator == (const STRING &t) const
 	{
 		int i;
 
@@ -121,8 +156,10 @@ namespace surya
 
 
 
+
+
 	// insertion and extraction operator overloading 
-	istream& operator >> (istream& in , STRING &t)  // ok
+	std::istream& operator >> (std::istream& in , STRING &t)  
 	{
 		if(t.ptr != nullptr)
 			delete [] t.ptr;
@@ -136,14 +173,17 @@ namespace surya
 		return in;
 	}
 
-	ostream& operator << (ostream& out , STRING &t)  // ok
+	std::ostream& operator << (std::ostream& out , STRING &t) 
 	{
 		if(t.ptr != nullptr)
 			out << t.ptr;
 		return out;
 	}
 
-	char& STRING::at(const int i) const  // ok
+
+
+	// Basic functions of c++ class 
+	char& STRING::at(const int i) const  
 	{
 		try
 		{
@@ -151,23 +191,24 @@ namespace surya
 				throw "terminate called after throwing an instance 'Out of range'" ;
 		}
 		catch(const char *s) {
-			cout << s << endl;
-			cout << "Aborted (core dumped)" << endl;
+			std::cout << s << std::endl;
+			std::cout << "Aborted (core dumped)" << std::endl;
 			exit(0);
 		} 
 		return ptr[i];
 	}
-	char& STRING::front() const // ok
+
+	char& STRING::front() const 
 	{
 		return ptr[0];
 	}
 
-	char& STRING::back() const  // ok
+	char& STRING::back() const 
 	{
 		return ptr[strlen(ptr)-1];
 	}
 
-	unsigned int STRING::length() const  // ok
+	unsigned int STRING::length() const 
 	{
 		unsigned int len = 0;
 
@@ -177,7 +218,7 @@ namespace surya
 		return len;
 	}
 
-	unsigned int STRING::size() const  // ok
+	unsigned int STRING::size() const  
 	{
 		unsigned int len = 0;
 
@@ -187,37 +228,24 @@ namespace surya
 		return len;
 	}
 
-	bool STRING::empty() const // ok
+	bool STRING::empty() const 
 	{
 		if(ptr == nullptr) return true;
 
 		return false;
 	}
 
-	const char * STRING::c_str() const // ok
+	const char * STRING::c_str() const 
 	{
 		return ptr;
 	}
 
-	void STRING::clear()  // ok
+	void STRING::clear()  
 	{
 		if(ptr != nullptr)
 			STRING::~STRING();  // explicitly calling destructor
 	}
 
-	bool STRING::compare(const STRING &s) const  // ok
-	{
-		if(!ptr || !s.ptr) return false;
-
-		int i;
-
-		for(i = 0 ; ptr[i] && s.ptr[i] ; i++)
-			if(ptr[i] != s.ptr[i]) return false;
-
-		if(s.ptr[i] == ptr[i]) return true;
-
-		return false;
-	}
 
 	void STRING::push_back(const char ch)
 	{
@@ -247,7 +275,7 @@ namespace surya
 		delete [] p;
 	}
 
-	void STRING::pop_back() // ok
+	void STRING::pop_back() 
 	{
 		if(!ptr) return;
 
@@ -271,7 +299,85 @@ namespace surya
 
 	}
 
-	char * strcpy(STRING &s1 ,const STRING &s2)  //ok
+	int STRING::find(const char *s) const
+	{
+		if(!ptr) return -1;
+
+		for(int i = 0 ; ptr[i] ; i++) {
+			int j = 0;
+			for(int k = i ; s[j] && ptr[k] ; k++,j++)
+				if(s[j] != ptr[k]) break;
+
+			if(s[j] == '\0') return i;
+		}
+
+		return -1;
+	}
+
+	void STRING::swap(STRING &s)
+	{
+		STRING t = *this;
+		*this = s;
+		s = t;
+	}
+
+	int STRING::compare(const STRING &s) const
+	{
+		if(!ptr || !s.ptr) return -1;
+
+		int i;
+		for(i = 0 ; ptr[i] && s.ptr[i] ; i++)
+			if(ptr[i] != s.ptr[i]) return ptr[i] - s.ptr[i];
+
+		if(ptr[i] == s.ptr[i]) return 0;
+
+		return ptr[i] - s.ptr[i];
+	}
+
+	void STRING::append(const STRING &s1)
+	{
+		char *s = new char[strlen(s1.ptr) + strlen(ptr) + 1];
+
+		int i = 0;
+
+		while(ptr[i])
+		{
+			s[i] = ptr[i];
+			i++;
+		}
+
+		int j = 0;
+
+		while(s1.ptr[j])
+		{
+			s[i] = s1.ptr[j];
+			j++,i++;
+		}
+		s[i] = '\0';
+
+		delete [] ptr;
+
+		ptr = new char[strlen(s)];
+
+		i = 0;
+
+		while(s[i]) {
+			ptr[i] = s[i];
+			i++;
+		}
+
+		ptr[i] = '\0';
+
+		delete [] s;
+	}
+
+
+
+
+
+
+	// C string functions 
+	char * strcpy(STRING &s1 ,const STRING &s2)  
 	{
 		if(!s2.ptr) return s1.ptr;
 
@@ -291,7 +397,7 @@ namespace surya
 		return s1.ptr;
 	}
 
-	char * strncpy(STRING& s1 , const STRING & s2, const int n)  // ok
+	char * strncpy(STRING& s1 , const STRING & s2, const int n)  
 	{
 
 		if(!s2.ptr || !n) return s1.ptr;
@@ -313,7 +419,8 @@ namespace surya
 		return s1.ptr;
 	}
 
-	int strcmp(const STRING& s1 , const STRING& s2) // ok
+
+	int strcmp(const STRING& s1 , const STRING& s2) 
 	{
 		if(s1.ptr == nullptr)
 			if(s2.ptr != nullptr) return s2.ptr[0];
@@ -334,7 +441,8 @@ namespace surya
 		return (int)(s1.ptr[i] - s2.ptr[i]);
 	}
 
-	int strncmp(const STRING& s1 ,const STRING& s2 , const int n)  // ok
+
+	int strncmp(const STRING& s1 ,const STRING& s2 , const int n)  
 	{
 		if(s1.ptr == nullptr)
 			if(s2.ptr != nullptr) return s2.ptr[0];
@@ -359,7 +467,8 @@ namespace surya
 		return 0;
 	}
 
-	char * strcat(STRING &s1 , const STRING &s2)  // ok
+
+	char * strcat(STRING &s1 , const STRING &s2)  
 	{
 		if(s2.ptr == nullptr) return 0;
 
@@ -408,7 +517,8 @@ namespace surya
 		return s1.ptr;
 	}
 
-	char * strncat(STRING &s1 , const STRING & s2,const int n)  // ok
+
+	char * strncat(STRING &s1 , const STRING & s2,const int n) 
 	{
 		if(s2.ptr == nullptr || !n) return s1.ptr;
 
@@ -451,7 +561,7 @@ namespace surya
 		return s1.ptr;
 	}
 
-	char * strrev(STRING &s)  // ok
+	char * strrev(STRING &s)  
 	{
 		if(!s.ptr) return 0;
 
@@ -468,7 +578,7 @@ namespace surya
 		return s.ptr;
 	}
 
-	char * strupper(STRING &s)  // ok
+	char * strupper(STRING &s)  
 	{
 		if(!s.ptr) return 0;
 
@@ -478,7 +588,7 @@ namespace surya
 	}
 
 
-	char * strlower(STRING &s)  // ok
+	char * strlower(STRING &s)  
 	{
 		if(!s.ptr) return 0;
 
@@ -488,7 +598,7 @@ namespace surya
 		return s.ptr;
 	}
 
-	char * strchr(const STRING& s, const char ch)  // ok
+	char * strchr(const STRING& s, const char ch) 
 	{
 		if(!s.ptr) return 0;
 
@@ -498,7 +608,7 @@ namespace surya
 		return 0;
 	}
 
-	char * strrchr(const STRING& s, const char ch)  // ok
+	char * strrchr(const STRING& s, const char ch)  
 	{
 		if(!s.ptr) return 0;
 
@@ -512,7 +622,7 @@ namespace surya
 		return 0;
 	}
 
-	char * strstr(const STRING& s, const char *p) // ok
+	char * strstr(const STRING& s, const char *p) 
 	{
 		if(!s.ptr) return 0;
 
@@ -527,7 +637,7 @@ namespace surya
 		return 0;
 	}
 
-	unsigned int strlen(const STRING& s)  // ok
+	unsigned int strlen(const STRING& s)  
 	{
 		if(!s.ptr) return 0;
 
@@ -538,7 +648,8 @@ namespace surya
 		return len - 1;
 
 	}
-	char * strstr(const STRING& s1 , const STRING & s2)  // ok 
+
+	char * strstr(const STRING& s1 , const STRING & s2)   
 	{
 		if(!s1.ptr || !s2.ptr) return 0;
 
