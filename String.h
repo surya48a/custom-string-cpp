@@ -15,15 +15,15 @@ namespace surya
 			// Constructors and destructors declarations
 			STRING();
 			STRING(const char*);
-			STRING(STRING &);
-			STRING operator = (const STRING &);
+			STRING(const STRING &);
+			STRING& operator = (const STRING &);
 			~STRING();
 
 			// Relational and logical operator overloading declarations
 			STRING& operator +=(const STRING &);
 			STRING operator +(const STRING&) const;
 			STRING operator +(const char *) const;
-			friend STRING operator +(const char *s , const STRING& t);
+			friend STRING operator +(const char *s , const STRING&);
 
 			char& operator [](const int) const;
 			bool operator > (const STRING &) const;
@@ -35,7 +35,7 @@ namespace surya
 
 			// insertion and extraction operator overloading declarations
 			friend std::istream& operator >> (std::istream& , STRING &);
-			friend std::ostream& operator << (std::ostream& , STRING &);
+			friend std::ostream& operator << (std::ostream& ,const STRING &);
 
 			// Basic functions in c++ string class
 			char& at(const int) const;

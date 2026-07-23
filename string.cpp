@@ -15,13 +15,13 @@ namespace surya
 		strcpy(ptr , s);
 	}
 
-	STRING::STRING(STRING &t) 
+	STRING::STRING(const STRING &t) 
 	{
 		ptr = new char[strlen(t.ptr) + 1];
 		strcpy(ptr , t.ptr);
 	}
 
-	STRING STRING::operator = (const STRING &t)
+	STRING& STRING::operator = (const STRING &t)
 	{
 		if(ptr != nullptr) {
 			delete [] ptr;
@@ -173,7 +173,7 @@ namespace surya
 		return in;
 	}
 
-	std::ostream& operator << (std::ostream& out , STRING &t) 
+	std::ostream& operator << (std::ostream& out ,const STRING &t) 
 	{
 		if(t.ptr != nullptr)
 			out << t.ptr;
