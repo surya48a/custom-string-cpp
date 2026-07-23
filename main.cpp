@@ -1,3 +1,5 @@
+//  ALL FUNCTIONS TEST CASES ARE THERE
+
 #include "String.h"
 #include <iostream>
 
