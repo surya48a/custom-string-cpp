@@ -1,4 +1,5 @@
 #include "String.h"
+#include<stdio.h>
 
 
 namespace surya
@@ -119,10 +120,11 @@ namespace surya
 	bool STRING::operator <= (const STRING &t) const  
 	{
 		int i;
-		for(i = 0 ; ptr[i] && t.ptr[i] ; i++)
+		for(i = 0 ; ptr[i] && t.ptr[i] ; i++) {
 			if(ptr[i] == t.ptr[i]) continue;
 			else if(ptr[i] > t.ptr[i]) return false;
 			else if(ptr[i] < t.ptr[i]) return true;
+		}
 
 		if(ptr[i] > t.ptr[i]) return false;
 		else if(ptr[i] < t.ptr[i]) return true;
@@ -164,12 +166,34 @@ namespace surya
 		if(t.ptr != nullptr)
 			delete [] t.ptr;
 
-		char s[1000];
+		FILE *fp = fopen("temp" , "w+");
 
-		in.getline(s , 1000);
+		char ch;
 
-		t.ptr = new char[strlen(s) + 1];
-		strcpy(t.ptr ,s );
+		int len = 0;
+
+		while(1) {
+			std::cin.get(ch);
+
+			if(ch == 10 || ch == '\n' || ch == '\r') 
+				break;
+			len++;
+			fputc(ch , fp);
+		}
+
+		t.ptr = new char[len + 1];
+		int i = 0;
+
+		rewind(fp);
+
+		while((ch = fgetc(fp)) != EOF) 
+			t.ptr[i++] = ch;
+
+		t.ptr[i] = '\0';
+
+		remove("temp");
+		fclose(fp);
+
 		return in;
 	}
 
@@ -187,7 +211,11 @@ namespace surya
 	{
 		try
 		{
-			if(i > strlen(ptr))
+			int len = 0;
+
+			while(ptr[len]) len++;
+
+			if(i > len)
 				throw "terminate called after throwing an instance 'Out of range'" ;
 		}
 		catch(const char *s) {
@@ -242,8 +270,11 @@ namespace surya
 
 	void STRING::clear()  
 	{
-		if(ptr != nullptr)
-			STRING::~STRING();  // explicitly calling destructor
+		if(ptr != nullptr) {
+			delete [] ptr;
+			ptr = nullptr;
+		}
+
 	}
 
 
@@ -423,13 +454,16 @@ namespace surya
 	int strcmp(const STRING& s1 , const STRING& s2) 
 	{
 		if(s1.ptr == nullptr)
+		{
 			if(s2.ptr != nullptr) return s2.ptr[0];
 			else return 0;
+		}
 
 		if(s2.ptr == nullptr)
+		{
 			if(s1.ptr != nullptr) return s1.ptr[0];
 			else return 0;
-
+		}
 		int i = 0;
 
 		while(s1.ptr[i] && s2.ptr[i]) {
@@ -445,12 +479,15 @@ namespace surya
 	int strncmp(const STRING& s1 ,const STRING& s2 , const int n)  
 	{
 		if(s1.ptr == nullptr)
+		{
 			if(s2.ptr != nullptr) return s2.ptr[0];
-			else return 0;
+		}			else return 0;
 
 		if(s2.ptr == nullptr)
+		{
 			if(s1.ptr != nullptr) return s1.ptr[0];
 			else return 0;
+		}
 
 		int i = 0;
 
